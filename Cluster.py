@@ -24,12 +24,18 @@ def getStandings():
 
 def getTeamPicks():
     file = open('teamPicks.csv', 'r')
-
+    reader = csv.reader(file, delimiter = '\t')
+    collegeValue = {}
+    teamPicks = {}
+    for row in reader:
+        collegeValue[row[2]] = row[-1]
+        teamPicks[row[2]] = row[4]
+    return teamPicks, collegeValue
 
 
 def main():
     diccPicks = getPicksValue()
     diccStandings = getStandings()
-    diccTeamPicks = getTeamPicks()
+    diccTeamPicks, diccPickCollege = getTeamPicks()
 
 main()
