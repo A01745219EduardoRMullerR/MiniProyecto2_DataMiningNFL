@@ -1,5 +1,18 @@
 import csv
 
+diccTeamNamesBefore2016 = {"Bills": "BUF", "Jets": "NYJ", "Dolphins": "MIA", "Patriots": "NE", "Ravens": "BAL", "Bengals": "CIN"
+                 ,"Browns": "CLE", "Giants": "NYG", "Cardinals": "ARI", "Texans": "HOU", "Steelers": "PIT", "Colts": "IND",
+                 "Jaguars": "JAX", "Bears": "CHI", "Seahawks": "SEA", "49ers": "SF", "Buccaneers": "TB", "Lions": "DET",
+                 "Titans": "TEN", "Saints": "NO", "Panthers": "CAR", "Rams": "STL", "Chargers": "SD", "Cowboys": "DAL",
+                "Eagles": "PHI", "Redskins":"WAS", "Falcons": "ATL", "Packers": "GB", "Vikings": "MIN", "Chiefs": "KC",
+                "Broncos": "DEN", "Raiders": "OAK"}
+diccTeamNamesThrough2020 = {"Bills": "BUF", "Jets": "NYJ", "Dolphins": "MIA", "Patriots": "NE", "Ravens": "BAL", "Bengals": "CIN"
+                 ,"Browns": "CLE", "Giants": "NYG", "Cardinals": "ARI", "Texans": "HOU", "Steelers": "PIT", "Colts": "IND",
+                 "Jaguars": "JAX", "Bears": "CHI", "Seahawks": "SEA", "49ers": "SF", "Buccaneers": "TB", "Lions": "DET",
+                 "Titans": "TEN", "Saints": "NO", "Panthers": "CAR", "Rams": "LA", "Chargers": "LAC", "Cowboys": "DAL",
+                "Eagles": "PHI", "Redskins": "WAS", "Falcons": "ATL", "Packers": "GB", "Vikings": "MIN", "Chiefs": "KC",
+                "Broncos": "DEN", "Raiders": "LV"}
+
 def getPicksValue():
     file = open('draft_values.csv', 'r')
     reader = csv.reader(file, skipinitialspace=True)
@@ -32,31 +45,91 @@ def getStandings():
 def getTeamPicks():
     file = open('teamPicks.csv', 'r')
     reader = csv.reader(file, delimiter = '\t')
-    collegeValue = {}
-    teamPicks = {}
-    for row in reader:
-        collegeValue[row[-1]] = int(row[2])
-        teamPicks[row[4]] = int(row[2])
-    return teamPicks, collegeValue
-
-
-def getColleges(diccPickCollege):
     colleges = []
-    for key in diccPickCollege:
-        colleges.append(key)
+    team = []
+    pick = []
+
+    for row in reader:
+        colleges.append(row[-1])
+        team.append(row[4])
+        pick.append(row[2])
+    return team, pick, colleges
+
+
+def getSingleCollegesList(collegesRaw):
+    colleges = []
+    for k in collegesRaw:
+        if k not in colleges:
+            colleges.append(k)
     return colleges
+
+
+def getAssocNamesLetters(diccStandings):
+    names = []
+    letters = []
+    oldLetters = list(diccTeamNamesBefore2016.values())
+    oldNames = list(diccTeamNamesBefore2016.keys())
+    newLetters = list(diccTeamNamesThrough2020.values())
+    newNames = list(diccTeamNamesThrough2020.keys())
+    for team in diccStandings:
+        team_lst = list(team)
+        team_lst.remove(team_lst[0])
+        team_lst.remove(team_lst[0])
+        team_lst.remove(team_lst[0])
+        team_lst.remove(team_lst[0])
+        teamLetters = "".join(team_lst)
+        letters.append(team)
+        teamName = ""
+        if teamLetters in oldLetters:
+            for n in range(0, len(oldLetters)):
+                if oldLetters[n] == teamLetters:
+                    teamName = oldNames[n]
+                    names.append(teamName)
+        elif teamLetters in newLetters:
+            for n in range(0, len(newLetters)):
+                if newLetters[n] == teamLetters:
+                    teamName = newNames[n]
+                    names.append(teamName)
+    return names, letters
+
+
+
+def getAverageTeamPctanDrafts(diccStandings, diccPicks, team, pick):
+    avgPcts = {}
+    draftValueperTeam = {}
+    names, letters = getAssocNamesLetters(diccStandings)
+    for n in range(0, len(team)-1, 1):
+        draftValueKeys = list(draftValueperTeam.keys())
+        draftValueValues = list(draftValueperTeam.values())
+        pickNumber = pick[n]
+        value = diccPicks[pickNumber]
+        t = team[n]
+        if t not in draftValueKeys:
+            draftValueperTeam[t] = value
+        else:
+            before = draftValueperTeam[t]
+            newValue = before + value
+            draftValueperTeam[t] = newValue
+    print(draftValueperTeam)
+
+
+
+
+
 
 
 def main():
     diccPicks = getPicksValue()
     diccStandings = getStandings()
-    diccTeamPicks, diccPickCollege = getTeamPicks()
-    colleges = getColleges(diccPickCollege)
+    team, pick, college = getTeamPicks()
+    colleges_Single = getSingleCollegesList(college)
+    teamAvgPct = getAverageTeamPctanDrafts(diccStandings, diccPicks, team, pick)
     print(diccPicks)
     print(diccStandings)
-    print(diccTeamPicks)
-    print(diccPickCollege)
-    print(colleges)
+    print(team)
+    print(pick)
+    print(college)
+    print(colleges_Single)
 
 
 
