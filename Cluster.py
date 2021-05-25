@@ -134,8 +134,6 @@ def getAverageTeamPctanDrafts(diccStandings, diccPicks, team, pick):
 def showResults(teamAvgPct, teamDraftValue, param):
     file = open("resultsPct.csv", 'w')
     file2 = open('resultsDraft.csv', 'w')
-    teamsPct = []
-    pctList = []
     for team in teamAvgPct:
         file.write(team)
         file.write(" ")
@@ -148,8 +146,53 @@ def showResults(teamAvgPct, teamDraftValue, param):
         file2.write("\n")
 
 
-    print(teamsPct)
-    print(pctList)
+def getClusters(teamAvgPct, teamDraftValue):
+    cluster1 = teamAvgPct['NE']
+    cluster2 = teamAvgPct['CHI']
+    cluster3 = teamAvgPct['CLE']
+    k = 3
+    clustering1 = []
+    clustering2 = []
+    clustering3 = []
+    for team in teamAvgPct:
+        pct = teamAvgPct[team]
+        if abs(pct - cluster1) <= abs(pct - cluster2):
+            if abs(pct - cluster1) <= abs(pct - cluster3):
+                clustering1.append(team)
+            else:
+                clustering3.append(team)
+        else:
+            if abs(pct - cluster2) <= abs(pct - cluster3):
+                clustering2.append(team)
+            else:
+                clustering3.append(team)
+    print("Clustering by PCT: \n")
+    print(clustering1)
+    print(clustering2)
+    print(clustering3)
+    j = list(teamDraftValue.values())
+    cluster1 = max(j)
+    cluster2 = (sum(j))/len(j)
+    cluster3 = min(j)
+    clustering1 = []
+    clustering2 = []
+    clustering3 = []
+    for team in teamDraftValue:
+        pct = teamDraftValue[team]
+        if abs(pct - cluster1) <= abs(pct - cluster2):
+            if abs(pct - cluster1) <= abs(pct - cluster3):
+                clustering1.append(team)
+            else:
+                clustering3.append(team)
+        else:
+            if abs(pct - cluster2) <= abs(pct - cluster3):
+                clustering2.append(team)
+            else:
+                clustering3.append(team)
+    print("Clustering by Draft Value: \n")
+    print(clustering1)
+    print(clustering2)
+    print(clustering3)
 
 
 def main():
@@ -159,9 +202,8 @@ def main():
     colleges_Single = getSingleCollegesList(college)
     teamAvgPct, teamDraftValue = getAverageTeamPctanDrafts(diccStandings, diccPicks, team, pick)
     showResults(teamAvgPct, teamDraftValue, getAssocNamesLetters(diccStandings))
-    print(college)
-    print(colleges_Single)
-    print("Performance: \n", teamAvgPct, "\nDraftValue: \n", teamDraftValue)
+    getClusters(teamAvgPct, teamDraftValue)
+    print("\n \nPerformance: \n", teamAvgPct, "\nDraftValue: \n", teamDraftValue)
 
 
 
