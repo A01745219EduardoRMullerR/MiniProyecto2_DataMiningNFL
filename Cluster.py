@@ -78,7 +78,7 @@ def getAssocNamesLetters(diccStandings):
         team_lst.remove(team_lst[0])
         team_lst.remove(team_lst[0])
         teamLetters = "".join(team_lst)
-        letters.append(team)
+        letters.append(teamLetters)
         teamName = ""
         if teamLetters in oldLetters:
             for n in range(0, len(oldLetters)):
@@ -110,7 +110,29 @@ def getAverageTeamPctanDrafts(diccStandings, diccPicks, team, pick):
             before = draftValueperTeam[t]
             newValue = before + value
             draftValueperTeam[t] = newValue
-    print(draftValueperTeam)
+    pctsDic = {}
+    pctsTeam = []
+    for n in range(0, 31):
+        pcts = []
+        t = letters[n]
+        for item in diccStandings:
+            item_lst = list(item)
+            item_lst.remove(item_lst[0])
+            item_lst.remove(item_lst[0])
+            item_lst.remove(item_lst[0])
+            item_lst.remove(item_lst[0])
+            i = "".join(item_lst)
+            if t == i:
+                pct = diccStandings[item]
+                pcts.append(pct)
+        avg = (sum(pcts))/len(pcts)
+        pctsTeam.append(avg)
+        pctsDic[t] = avg
+    return pctsDic, draftValueperTeam
+
+
+
+
 
 
 
@@ -123,13 +145,14 @@ def main():
     diccStandings = getStandings()
     team, pick, college = getTeamPicks()
     colleges_Single = getSingleCollegesList(college)
-    teamAvgPct = getAverageTeamPctanDrafts(diccStandings, diccPicks, team, pick)
+    teamAvgPct, teamDraftValue = getAverageTeamPctanDrafts(diccStandings, diccPicks, team, pick)
     print(diccPicks)
     print(diccStandings)
     print(team)
     print(pick)
     print(college)
     print(colleges_Single)
+    print("Performance: \n", teamAvgPct, "\nDraftValue: \n", teamDraftValue)
 
 
 
