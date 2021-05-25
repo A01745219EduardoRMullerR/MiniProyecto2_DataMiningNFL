@@ -131,13 +131,25 @@ def getAverageTeamPctanDrafts(diccStandings, diccPicks, team, pick):
     return pctsDic, draftValueperTeam
 
 
+def showResults(teamAvgPct, teamDraftValue, param):
+    file = open("resultsPct.csv", 'w')
+    file2 = open('resultsDraft.csv', 'w')
+    teamsPct = []
+    pctList = []
+    for team in teamAvgPct:
+        file.write(team)
+        file.write(" ")
+        file.write(str(teamAvgPct[team]))
+        file.write("\n")
+    for team in teamDraftValue:
+        file2.write(team)
+        file2.write(" ")
+        file2.write(str(teamDraftValue[team]))
+        file2.write("\n")
 
 
-
-
-
-
-
+    print(teamsPct)
+    print(pctList)
 
 
 def main():
@@ -146,10 +158,7 @@ def main():
     team, pick, college = getTeamPicks()
     colleges_Single = getSingleCollegesList(college)
     teamAvgPct, teamDraftValue = getAverageTeamPctanDrafts(diccStandings, diccPicks, team, pick)
-    print(diccPicks)
-    print(diccStandings)
-    print(team)
-    print(pick)
+    showResults(teamAvgPct, teamDraftValue, getAssocNamesLetters(diccStandings))
     print(college)
     print(colleges_Single)
     print("Performance: \n", teamAvgPct, "\nDraftValue: \n", teamDraftValue)
