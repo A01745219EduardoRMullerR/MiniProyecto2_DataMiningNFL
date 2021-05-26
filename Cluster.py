@@ -104,6 +104,10 @@ def getAverageTeamPctanDrafts(diccStandings, diccPicks, team, pick):
         pickNumber = pick[n]
         value = diccPicks[pickNumber]
         t = team[n]
+        t_lst = list(t)
+        if t_lst[-1] == " ":
+            t_lst.remove(t_lst[-1])
+            t = "".join(t_lst)
         if t not in draftValueKeys:
             draftValueperTeam[t] = value
         else:
@@ -148,7 +152,7 @@ def showResults(teamAvgPct, teamDraftValue, param):
 
 def getClusters(teamAvgPct, teamDraftValue):
     cluster1 = teamAvgPct['NE']
-    cluster2 = teamAvgPct['CHI']
+    cluster2 = teamAvgPct['TEN']
     cluster3 = teamAvgPct['CLE']
     k = 3
     clustering1 = []
@@ -190,6 +194,7 @@ def getClusters(teamAvgPct, teamDraftValue):
             else:
                 clustering3.append(team)
     print("Clustering by Draft Value: \n")
+    print(cluster1, cluster2, cluster3)
     print(clustering1)
     print(clustering2)
     print(clustering3)
